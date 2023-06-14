@@ -1,4 +1,4 @@
-import { useState } from "react";
+//import { useState } from "react";
 import { FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
@@ -25,8 +25,34 @@ const MySelectedClasses = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         // Make API call to remove the class
+        axiosSecure.delete(`/deleteselectedclasses/${classId}`)
+                    .then(res => {
+                        console.log('deleted res', res.data);
+                        if (res.data.deletedCount > 0) {
+                            refetch();
+                            Swal.fire(
+                                'Deleted!',
+                                'Your file has been deleted.',
+                                'success'
+                            )
+                        }
+                    })
+                    .catch((error) => {
+                      Swal.fire(
+                        "Error",
+                        "An error occurred while removing the class.",
+                        "error"
+                      );
+                    });
+        
+        
+        
+        
+        
+        /*
         axiosSecure(`/deleteselectedclasses?email=${user?.email}&id=${classId}`)
           .then(() => {
+            console.log('------------------delete res----------', res)
             Swal.fire("Deleted!", "Your class has been removed.", "success");
             refetch(); // Refetch the updated list of selected classes
           })
@@ -37,9 +63,45 @@ const MySelectedClasses = () => {
               "error"
             );
           });
+
+*/
+
+
+
       }
     });
   };
+
+
+
+  const handleDelete = item => {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+
+            axiosSecure.delete(`/deleteselectedclasses/${item._id}`)
+                .then(res => {
+                    console.log('deleted res', res.data);
+                    if (res.data.deletedCount > 0) {
+                        refetch();
+                        Swal.fire(
+                            'Deleted!',
+                            'Your file has been deleted.',
+                            'success'
+                        )
+                    }
+                })
+
+        }
+    })
+}
 
   return (
     <div className="w-full">
@@ -73,7 +135,7 @@ const MySelectedClasses = () => {
               </p>
               <button
                 className="text-red-600"
-                onClick={() => handleRemoveClass(classItem._id)}
+                onClick={() => handleDelete(classItem)}
               >
                 <FaTrashAlt />
               </button>
