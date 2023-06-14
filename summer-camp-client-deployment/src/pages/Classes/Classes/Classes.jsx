@@ -20,6 +20,7 @@ const Classes = () => {
       const cartItem = {
         classId: classItem._id,
         name: classItem.name,
+        instructorEmail: classItem.instructorEmail,
         image: classItem.image,
         price: classItem.price,
         email: user.email,
@@ -68,13 +69,13 @@ const Classes = () => {
   };
 
   return (
-    <div className="flex">
+    <div className="grid md:grid-cols-3 gap-10">
       {classes
         .filter((classItem) => classItem.status === "approved")
         .map((classItem, index) => (
           <div
             key={index}
-            className={`card bg-base-400 w-1/4 shadow-xl ${
+            className={`card bg-base-400 w-96 shadow-xl ${
               classItem.availableSeats === 0 ? "bg-red-400" : ""
             }`}
           >

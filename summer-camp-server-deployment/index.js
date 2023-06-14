@@ -253,31 +253,76 @@ async function run() {
 
       const selecteditem = req.body;
 
-      console.log("------selecteditem------", selecteditem);
+      const getclass = await classesCollection.findOne({
+        _id: new ObjectId(req.body.classId),
+      });
+
+      let numberofstudents;
+      if (getclass.numberofstudents) {
+        numberofstudents = getclass.numberofstudents + 1;
+      } else {
+        numberofstudents = 1;
+      }
+
+      const emailofstudents = [];
+      if (getclass.emailofstudents) {
+        emailofstudents.push(...getclass.emailofstudents, req.body.email);
+      } else {
+        emailofstudents.push(req.body.email);
+      }
+
+      console.log("------emailofstudents------", emailofstudents);
+      const classUpdate = await classesCollection.updateOne(
+        { _id: new ObjectId(req.body.classId) },
+        {
+          $set: {
+            emailofstudents: emailofstudents,
+            numberofstudents: parseInt(numberofstudents),
+          },
+        }
+      );
+
       const result = await cartCollection.insertOne(selecteditem);
       res.send(result);
     });
 
-    
+    /*
+
     app.delete("/carts/:id", async (req, res) => {
       const id = req.params.id;
       const query = { _id: new ObjectId(id) };
       const result = await cartCollection.deleteOne(query);
       res.send(result);
-    });
+    }); 
+    
+    */
 
     // delete cart item using get request
     app.delete("/deleteselectedclasses/:id", async (req, res) => {
+      const id = req.params.id;
 
-      const id = req.params.id; 
-      
-      
-      
+      const getclass = await cartCollection.findOne({ _id: new ObjectId(id) });
+
+      console.log("----getclass----------", getclass);
+
+      let numberofstudents;
+      if (getclass.numberofstudents) {
+        numberofstudents = getclass.numberofstudents - 1;
+      }
+
+      const classUpdate = await classesCollection.updateOne(
+        { _id: new ObjectId(getclass.classId) },
+        {
+          $set: {
+            numberofstudents: parseInt(numberofstudents),
+          },
+        }
+      );
+
       const query = { _id: new ObjectId(id) };
       const result = await cartCollection.deleteOne(query);
       res.send(result);
     });
-
 
     // classes collection apis
     //get classes
