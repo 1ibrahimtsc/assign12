@@ -162,6 +162,33 @@ async function run() {
     // email same
     // check admin
     app.get("/users/admin/:email", verifyJWT, async (req, res) => {
+      try {
+        const email = req.params.email;
+
+        if (req.decoded.email !== email) {
+          return res.send({ admin: false });
+        }
+
+        const query = { email: email };
+        const user = await usersCollection.findOne(query);
+
+        if (!user) {
+          return res.send({ admin: false });
+        }
+
+        const result = {
+          admin: user.role === "admin" || user.role === "super-admin",
+        };
+
+        res.send(result);
+      } catch (error) {
+        console.error("Error in retrieving user:", error);
+        res.status(500).send({ error: "Internal Server Error" });
+      }
+    });
+
+    /*
+    app.get("/users/admin/:email", verifyJWT, async (req, res) => {
       const email = req.params.email;
 
       if (req.decoded.email !== email) {
@@ -174,6 +201,8 @@ async function run() {
 
       res.send(result);
     });
+
+    */
 
     app.patch("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
@@ -474,21 +503,17 @@ async function run() {
     // payment related api
     app.post("/payments", verifyJWT, async (req, res) => {
       const payment = req.body;
+
+      console.log('-------app.post("/payments"-----------', req.body);
       const insertResult = await paymentCollection.insertOne(payment);
 
       const query = {
         _id: { $in: payment.cartItems.map((id) => new ObjectId(id)) },
       };
 
-
       const deleteResult = await cartCollection.deleteMany(query);
 
-      
-
-      const result = await classesCollection.updateOne(
-        query,
-        updateDoc
-      );
+      //const result = await classesCollection.updateOne(query, updateDoc);
 
       res.send({ insertResult, deleteResult });
     });
@@ -521,19 +546,6 @@ async function run() {
       });
     });
 
-    /**
-     * ---------------
-     * BANGLA SYSTEM(second best solution)
-     * ---------------
-     * 1. load all payments
-     * 2. for each payment, get the menuItems array
-     * 3. for each item in the menuItems array get the menuItem from the menu collection
-     * 4. put them in an array: allOrderedItems
-     * 5. separate allOrderedItems by category using filter
-     * 6. now get the quantity by using length: pizzas.length
-     * 7. for each category use reduce to get the total amount spent on this category
-     *
-     */
     app.get("/order-stats", verifyJWT, verifyAdmin, async (req, res) => {
       const pipeline = [
         {

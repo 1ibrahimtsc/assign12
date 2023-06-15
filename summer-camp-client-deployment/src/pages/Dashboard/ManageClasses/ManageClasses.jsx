@@ -85,21 +85,21 @@ const ManageClasses = () => {
             </div>
             <div className="flex items-center space-x-2">
               <button
-                className="text-blue-500"
+                className="text-blue-800"
                 onClick={() => handleApprove(item._id)}
                 disabled={item.status !== "pending"}
               >
                 Approve
               </button>
               <button
-                className="text-red-500"
+                className="text-red-700"
                 onClick={() => handleDeny(item._id)}
                 disabled={item.status !== "pending"}
               >
                 Deny
               </button>
               <button
-                className="text-green-500"
+                className="text-white-700"
                 onClick={() => handleFeedbackModalOpen(item._id)}
                 disabled={item.status !== "denied"}
               >

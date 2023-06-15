@@ -23,11 +23,13 @@ import Payment from "../pages/Dashboard/Payment/Payment";
 import UserHome from "../pages/Dashboard/UserHome/UserHome";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
 import Classes from "../pages/Classes/Classes/Classes";
+import Errorpage from "../pages/Errorpage/Errorpage";
 
 export const router = createBrowserRouter([
   {
     path: "/",
     element: <Main></Main>,
+    errorElement: <Errorpage></Errorpage>,
     children: [
       {
         path: "/",
