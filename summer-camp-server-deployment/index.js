@@ -479,7 +479,16 @@ async function run() {
       const query = {
         _id: { $in: payment.cartItems.map((id) => new ObjectId(id)) },
       };
+
+
       const deleteResult = await cartCollection.deleteMany(query);
+
+      
+
+      const result = await classesCollection.updateOne(
+        query,
+        updateDoc
+      );
 
       res.send({ insertResult, deleteResult });
     });
