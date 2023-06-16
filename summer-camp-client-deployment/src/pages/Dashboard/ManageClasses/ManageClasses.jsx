@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
-import SectionTitle from "../../../components/SectionTitle/SectionTitle";
+
+import SectionTitle from "../../../hooks/SectionTitle";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useClasses from "../../../hooks/useClasses";
@@ -64,7 +64,7 @@ const ManageClasses = () => {
 
   return (
     <div className="w-full">
-      <SectionTitle heading="Manage All Classes" subHeading="Hurry up" />
+      <SectionTitle heading="Manage Classes" subHeading="Welcome" />
       <div className="overflow-x-auto w-full">
         {classes.map((item) => (
           <div key={item._id} className="flex items-center justify-between p-4">

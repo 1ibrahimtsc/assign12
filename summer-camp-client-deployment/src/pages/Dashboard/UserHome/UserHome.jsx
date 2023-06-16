@@ -1,11 +1,15 @@
+import useAuth from "../../../hooks/useAuth";
 
+import SectionTitle from "../../../hooks/SectionTitle";
 
 const UserHome = () => {
-    return (
-        <div>
-            <h2>Regular user home</h2>
-        </div>
-    );
+  const { user } = useAuth();
+  return (
+    <div className="w-full m-4">
+      <SectionTitle heading={user.displayName} subHeading="Welcome" />
+      <h2 className="text-3xl">Hi, {user.displayName}</h2>
+    </div>
+  );
 };
 
 export default UserHome;

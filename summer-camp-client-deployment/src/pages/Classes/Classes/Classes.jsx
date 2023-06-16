@@ -6,16 +6,34 @@ import useAdmin from "../../../hooks/useAdmin";
 import useInstructor from "../../../hooks/useInstructor";
 import { Navigate } from "react-router-dom";
 import Swal from "sweetalert2";
+import useCart from "../../../hooks/useCart";
 
 const Classes = () => {
-  const [classes, , refetch] = useClasses();
+  const [cart, refetch] = useCart();
+  const [classes, ,] = useClasses();
   const [axiosSecure] = useAxiosSecure();
   const { user } = useContext(AuthContext);
   const [isAdmin] = useAdmin();
   const [isInstructor] = useInstructor();
 
   const handleAddToCart = (classItem) => {
-    console.log(classItem);
+    const classesExist = cart.filter(
+      (cartItem) => cartItem.classId === classItem._id
+    );
+    console.log(
+      "-------classItem from Classes Component-----------",
+      classItem
+    );
+
+    console.log("-------cart from Classes Component-----------", cart);
+
+    console.log(
+      "-------classesExist from Classes Component-----------",
+      classesExist.length
+    );
+
+    //  if (classesExist.length > 0) {      }
+
     if (user && user.email) {
       const cartItem = {
         classId: classItem._id,
@@ -27,9 +45,11 @@ const Classes = () => {
       };
 
       if (classItem.availableSeats === 0) {
-        alert("This class is full");
+        // alert("This class is full");
       } else if (isAdmin || isInstructor) {
         alert("You cannot select this class");
+      } else if (classesExist.length > 0) {
+        Swal.fire("This class already selected!");
       } else {
         // TODO: Select class
         //?email=${user?.email}

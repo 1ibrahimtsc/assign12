@@ -1,5 +1,4 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { FaWallet, FaHome, FaUtensils, FaUsers } from "react-icons/fa";
 
 import useAdmin from "../hooks/useAdmin";
 //import useStudent from "../hooks/useStudent";
@@ -22,64 +21,58 @@ const Dashboard = () => {
         </label>
         <Outlet></Outlet>
       </div>
-      <div className="drawer-side bg-[#fdba74]">
+      <div className="drawer-side bg-red-400">
         <label htmlFor="my-drawer-2" className="drawer-overlay"></label>
         <ul className="menu p-4 w-80">
           {isAdmin ? (
             <>
               <li>
-                <NavLink to="/dashboard/adminhome">
-                  <FaHome></FaHome> Admin Home
-                </NavLink>
+                <NavLink to="/dashboard/adminhome">Admin Home</NavLink>
               </li>
 
               <li>
-                <NavLink to="/dashboard/manageclasses">
-                  <FaWallet></FaWallet> Manage Classes
-                </NavLink>
+                <NavLink to="/dashboard/manageclasses">Manage Classes</NavLink>
               </li>
 
               <li>
-                <NavLink to="/dashboard/manageusers">
-                  <FaUsers></FaUsers> All Users
-                </NavLink>
+                <NavLink to="/dashboard/manageusers">All Users</NavLink>
               </li>
             </>
           ) : isInstructor ? (
             <>
               <li>
-                <NavLink to="/dashboard/addClasses">
-                  {" "}
-                  <FaUtensils></FaUtensils> Add an Class
+                <NavLink to="/dashboard/instructorhome">
+                  Instructor Home
                 </NavLink>
               </li>
               <li>
-                <NavLink to="/dashboard/myclasses">
-                  <FaWallet></FaWallet> My Classes
-                </NavLink>
+                <NavLink to="/dashboard/addClasses">Add an Class</NavLink>
+              </li>
+              <li>
+                <NavLink to="/dashboard/myclasses">My Classes</NavLink>
               </li>
             </>
           ) : (
             <>
               <li>
+                <NavLink to="/dashboard/userhome">User Home</NavLink>
+              </li>
+              <li>
                 <NavLink to="/dashboard/myselectedclasses">
-                  {" "}
-                  <FaUtensils></FaUtensils>My Selected Classes
+                  My Selected Classes
                 </NavLink>
               </li>
               <li>
                 <NavLink to="/dashboard/enrolledclasses">
-                  <FaWallet></FaWallet> My Enrolled Classes
+                  My Enrolled Classes
                 </NavLink>
               </li>
             </>
           )}
 
-          <div className="divider"></div>
+          <div className="divider">OR</div>
           <li>
-            <NavLink to="/">
-              <FaHome></FaHome> Home
-            </NavLink>{" "}
+            <NavLink to="/">Home</NavLink>
           </li>
         </ul>
       </div>

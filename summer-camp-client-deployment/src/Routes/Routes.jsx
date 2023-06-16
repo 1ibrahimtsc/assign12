@@ -6,7 +6,7 @@ import Instructors from "../pages/Instructors/Instructors/Instructors";
 import Login from "../pages/Login/Login";
 import SignUp from "../pages/SignUp/SignUp";
 import PrivateRoute from "./PrivateRoute";
-import Secret from "../pages/Shared/Secret/Secret";
+
 import Dashboard from "../Layout/Dashboard";
 import MyClasses from "../pages/Dashboard/MyClasses/MyClasses";
 import AllUsers from "../pages/Dashboard/AllUsers/AllUsers";
@@ -22,8 +22,10 @@ import ManageUsers from "../pages/Dashboard/ManageUsers/ManageUsers";
 import Payment from "../pages/Dashboard/Payment/Payment";
 import UserHome from "../pages/Dashboard/UserHome/UserHome";
 import AdminHome from "../pages/Dashboard/AdminHome/AdminHome";
+import InstructorHome from "../pages/Dashboard/InstructorHome/InstructorHome";
 import Classes from "../pages/Classes/Classes/Classes";
 import Errorpage from "../pages/Errorpage/Errorpage";
+import Enrolledclasses from "../pages/Dashboard/Enrolledclasses/Enrolledclasses";
 
 export const router = createBrowserRouter([
   {
@@ -61,15 +63,6 @@ export const router = createBrowserRouter([
       </PrivateRoute>
     ),
     children: [
-      {
-        path: "userhome",
-        element: <UserHome></UserHome>,
-      },
-
-      {
-        path: "payment",
-        element: <Payment></Payment>,
-      },
       // admin routes
       {
         path: "adminhome",
@@ -105,6 +98,15 @@ export const router = createBrowserRouter([
       },
 
       {
+        path: "instructorhome",
+        element: (
+          <InstructorRoute>
+            <InstructorHome></InstructorHome>
+          </InstructorRoute>
+        ),
+      },
+
+      {
         path: "addClasses",
         element: (
           <InstructorRoute>
@@ -123,10 +125,37 @@ export const router = createBrowserRouter([
       },
 
       {
+        path: "userhome",
+        element: (
+          <StudentRoute>
+            <UserHome></UserHome>
+          </StudentRoute>
+        ),
+      },
+
+      {
         path: "myselectedclasses",
         element: (
           <StudentRoute>
             <MySelectedClasses></MySelectedClasses>
+          </StudentRoute>
+        ),
+      },
+
+      {
+        path: "enrolledclasses",
+        element: (
+          <StudentRoute>
+            <Enrolledclasses></Enrolledclasses>
+          </StudentRoute>
+        ),
+      },
+
+      {
+        path: "payment",
+        element: (
+          <StudentRoute>
+            <Payment></Payment>
           </StudentRoute>
         ),
       },

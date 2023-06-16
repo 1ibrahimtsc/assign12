@@ -282,6 +282,7 @@ async function run() {
 
       const selecteditem = req.body;
 
+      /*
       const getclass = await classesCollection.findOne({
         _id: new ObjectId(req.body.classId),
       });
@@ -300,6 +301,8 @@ async function run() {
         emailofstudents.push(req.body.email);
       }
 
+      
+      
       console.log("------emailofstudents------", emailofstudents);
       const classUpdate = await classesCollection.updateOne(
         { _id: new ObjectId(req.body.classId) },
@@ -310,6 +313,7 @@ async function run() {
           },
         }
       );
+      */
 
       const result = await cartCollection.insertOne(selecteditem);
       res.send(result);
@@ -467,7 +471,7 @@ async function run() {
       const result = await classesCollection.insertOne({
         ...req.body,
         status: "pending",
-        enrolledstudent: [],
+        totalenrolledstudent: 0,
         feedback: "",
       });
       res.send(result);
@@ -481,7 +485,7 @@ async function run() {
       const result = await classesCollection.updateOne(
         { _id: new ObjectId(id) },
         { $set: req.body },
-        { upsert: true }
+        { upsert: false }
       );
     });
 
@@ -504,16 +508,49 @@ async function run() {
     app.post("/payments", verifyJWT, async (req, res) => {
       const payment = req.body;
 
-      console.log('-------app.post("/payments"-----------', req.body);
+      //console.log('-------app.post("/payments"-----------', req.body);
       const insertResult = await paymentCollection.insertOne(payment);
 
       const query = {
         _id: { $in: payment.cartItems.map((id) => new ObjectId(id)) },
       };
 
+      // console.log( "--------queryforupdateclasses-------", queryforupdateclasses   );
       const deleteResult = await cartCollection.deleteMany(query);
 
-      //const result = await classesCollection.updateOne(query, updateDoc);
+      const queryforupdateclasses = {
+        _id: { $in: payment.selectedclasses.map((id) => new ObjectId(id)) },
+      };
+
+      const resultupdateclasses = await classesCollection.updateMany(
+        queryforupdateclasses,
+        {
+          $inc: {
+            availableSeats: -1,
+            totalenrolledstudent: 1,
+          },
+        }
+      );
+
+      const queryforupdateinstructors = {
+        email: { $in: payment.instructorEmails.map((email) => email) },
+      };
+
+      console.log(
+        "----------queryforupdateinstructors-------------",
+        queryforupdateinstructors
+      );
+
+      const resultupdateusers = await usersCollection.updateMany(
+        queryforupdateinstructors,
+        {
+          $inc: {
+            enrolledstudent: 1,
+          },
+        }
+      );
+
+      //  { upsert: true }
 
       res.send({ insertResult, deleteResult });
     });

@@ -1,9 +1,7 @@
-import { useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
-
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useMyClasses from "../../../hooks/useMyClasses";
+import SectionTitle from "../../../hooks/SectionTitle";
 
 const MyClasses = () => {
   const [myClasses, , refetch] = useMyClasses();
@@ -13,6 +11,7 @@ const MyClasses = () => {
 
   return (
     <div className="w-full">
+      <SectionTitle heading="My Classes Page" subHeading="Welcome" />
       <div className="overflow-x-auto w-full">
         {myClasses.map((myClass) => (
           <div
@@ -44,7 +43,7 @@ const MyClasses = () => {
             </div>
             <div>
               {myClass.status === "denied" && (
-                <button className="text-blue-500">Update</button>
+                <button className="text-blue-800">Update</button>
               )}
             </div>
           </div>

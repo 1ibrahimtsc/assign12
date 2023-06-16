@@ -62,7 +62,7 @@ const NavBar = () => {
 
       {user && !isAdmin && !isInstructor && (
         <li>
-          <Link to="/dashboard/studenthome" onClick={closeMenu}>
+          <Link to="/dashboard/userhome" onClick={closeMenu}>
             Dashboard
           </Link>
         </li>

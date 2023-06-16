@@ -1,6 +1,4 @@
-import { useState } from "react";
-import { FaTrashAlt, FaUserTie, FaUserShield } from "react-icons/fa";
-import SectionTitle from "../../../components/SectionTitle/SectionTitle";
+import SectionTitle from "../../../hooks/SectionTitle";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import useUsers from "../../../hooks/useUsers";
@@ -29,7 +27,7 @@ const ManageUsers = () => {
 
   return (
     <div className="w-full">
-      <SectionTitle heading="Manage All Users" subHeading="Hurry up" />
+      <SectionTitle heading="Manage All Users" subHeading="Welcome" />
       <div className="overflow-x-auto w-full">
         {users.map((user) => (
           <div key={user._id} className="flex items-center justify-between p-4">
@@ -64,31 +62,3 @@ const ManageUsers = () => {
 };
 
 export default ManageUsers;
-
-/*
-
-import { useState } from "react";
-import { FaTrashAlt } from "react-icons/fa";
-import SectionTitle from "../../../components/SectionTitle/SectionTitle";
-import Swal from "sweetalert2";
-import useAxiosSecure from "../../../hooks/useAxiosSecure";
-import useUsers from "../../../hooks/useUsers";
-
-const ManageUsers = () => {
-  const [users, , refetch] = useUsers();
-  const [axiosSecure] = useAxiosSecure();
-
-  return (
-    <div className="w-full">
-      <SectionTitle heading="Manage All Classes" subHeading="Hurry up" />
-      <div className="overflow-x-auto w-full">
-        {
-          // users will be display here using map. user has name, email and role field
-        }
-      </div>
-    </div>
-  );
-};
-
-export default ManageUsers;
-*/

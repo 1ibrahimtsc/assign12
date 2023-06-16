@@ -8,6 +8,7 @@ import { useQuery } from "@tanstack/react-query";
 import useAuth from "../../../hooks/useAuth";
 import useCart from "../../../hooks/useCart";
 import { Link } from "react-router-dom";
+import SectionTitle from "../../../hooks/SectionTitle";
 
 const MySelectedClasses = () => {
   const [cart, refetch] = useCart();
@@ -43,6 +44,7 @@ const MySelectedClasses = () => {
         <Helmet>
           <title>Summer Camp School | My Selected Classes</title>
         </Helmet>
+        <SectionTitle heading="My Selected Classes" subHeading="Welcome" />
         <h1 className="w-full my-auto">My Selected Classes</h1>
         <div className="overflow-x-auto w-full">
           <h3 className="text-3xl">Total : {cart.length}</h3>
