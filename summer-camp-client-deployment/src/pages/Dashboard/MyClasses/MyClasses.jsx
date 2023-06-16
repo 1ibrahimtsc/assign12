@@ -7,47 +7,56 @@ const MyClasses = () => {
   const [myClasses, , refetch] = useMyClasses();
   const [axiosSecure] = useAxiosSecure();
 
-  console.log("-----------myClasses---------", myClasses);
-
   return (
     <div className="w-full">
       <SectionTitle heading="My Classes Page" subHeading="Welcome" />
       <div className="overflow-x-auto w-full">
-        {myClasses.map((myClass) => (
-          <div
-            key={myClass._id}
-            className="flex items-center justify-between p-4"
-          >
-            <div className="flex items-center space-x-4">
-              <img
-                src={myClass.image}
-                alt={myClass.name}
-                className="w-12 h-12 rounded-full"
-              />
-              <div>
-                <h3 className="text-lg font-medium">{myClass.name}</h3>
-                <p>Instructor: {myClass.instructor}</p>
-                <p>Instructor Email: {myClass.instructorEmail}</p>
-                <p>Price: {myClass.price}</p>
-                <p>Status: {myClass.status}</p>
-                <p>
-                  Total Enrolled Students:{" "}
-                  {myClass.enrolledStudents?.length
-                    ? myClass.enrolledStudents?.length
+        <table>
+          <thead>
+            <tr>
+              <th>Picture</th>
+              <th>Name</th>
+              <th>Instructor Name</th>
+              <th>Instructor Email</th>
+              <th>Price</th>
+              <th>Status</th>
+              <th>Total Enrolled</th>
+              <th>Feedback</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {myClasses.map((myClass) => (
+              <tr key={myClass._id}>
+                <td>
+                  <img
+                    src={myClass.image}
+                    alt={myClass.name}
+                    className="w-12 h-12 rounded-full"
+                  />
+                </td>
+                <td>{myClass.name}</td>
+                <td>{myClass.instructor}</td>
+                <td>{myClass.instructorEmail}</td>
+                <td>{myClass.price}</td>
+                <td>{myClass.status}</td>
+                <td>
+                  {myClass.totalenrolledstudent
+                    ? myClass.totalenrolledstudent
                     : 0}
-                </p>
-                {myClass.status === "denied" && (
-                  <p>Feedback: {myClass.feedback}</p>
-                )}
-              </div>
-            </div>
-            <div>
-              {myClass.status === "denied" && (
-                <button className="text-blue-800">Update</button>
-              )}
-            </div>
-          </div>
-        ))}
+                </td>
+                <td>
+                  {myClass.status === "denied" && <p>{myClass.feedback}</p>}
+                </td>
+                <td>
+                  {myClass.status === "denied" && (
+                    <button className="btn btn-primary">Update</button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
       </div>
     </div>
   );

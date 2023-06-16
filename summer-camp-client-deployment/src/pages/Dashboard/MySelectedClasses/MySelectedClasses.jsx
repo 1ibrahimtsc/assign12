@@ -4,7 +4,7 @@ import { FaTrashAlt } from "react-icons/fa";
 import Swal from "sweetalert2";
 import useAxiosSecure from "../../../hooks/useAxiosSecure";
 import { useQuery } from "@tanstack/react-query";
-//import useMySelectedClasses from "../../../hooks/useMySelectedClasses";
+
 import useAuth from "../../../hooks/useAuth";
 import useCart from "../../../hooks/useCart";
 import { Link } from "react-router-dom";
@@ -28,7 +28,6 @@ const MySelectedClasses = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         axiosSecure.delete(`/deleteselectedclasses/${item._id}`).then((res) => {
-          console.log("deleted res", res.data);
           if (res.data.deletedCount > 0) {
             refetch();
             Swal.fire("Deleted!", "Class has been deleted.", "success");

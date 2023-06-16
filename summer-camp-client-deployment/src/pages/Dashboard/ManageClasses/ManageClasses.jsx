@@ -15,8 +15,7 @@ const ManageClasses = () => {
   const handleApprove = (id) => {
     // Update the status of the class to 'approved' using API call
     axiosSecure.put(`/classes/${id}`, { status: "approved" }).then((res) => {
-      console.log("approved res", res.data);
-      if (res.data.updatedCount > 0) {
+      if (res.data.modifiedCount > 0) {
         refetch();
       }
     });
@@ -25,8 +24,7 @@ const ManageClasses = () => {
   const handleDeny = (id) => {
     // Update the status of the class to 'denied' using API call
     axiosSecure.put(`/classes/${id}`, { status: "denied" }).then((res) => {
-      console.log("denied res", res.data);
-      if (res.data.updatedCount > 0) {
+      if (res.data.modifiedCount > 0) {
         refetch();
       }
     });
@@ -40,11 +38,10 @@ const ManageClasses = () => {
     axiosSecure
       .put(`/classes/${selectedClass}`, { feedback: feedbackText })
       .then((res) => {
-        console.log("feedback sent", res.data);
         //handleFeedbackModalClose();
 
-        if (res.data.updatedCount > 0) {
-          // refetch();
+        if (res.data.modifiedCount > 0) {
+          refetch();
           // Perform any necessary actions after sending feedback
           // Close the modal, reset states, etc.
         }
@@ -72,7 +69,7 @@ const ManageClasses = () => {
               <img
                 src={item.image}
                 alt={item.name}
-                className="w-12 h-12 rounded-full"
+                className="w-40 h-40 rounded-full"
               />
               <div>
                 <h3 className="text-lg font-medium">{item.name}</h3>

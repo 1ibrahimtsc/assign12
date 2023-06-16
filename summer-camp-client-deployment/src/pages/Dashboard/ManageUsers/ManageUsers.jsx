@@ -9,8 +9,7 @@ const ManageUsers = () => {
 
   const handleMakeInstructor = (userId) => {
     axiosSecure.put(`/users/${userId}`, { role: "instructor" }).then((res) => {
-      console.log("make instructor res", res.data);
-      if (res.data.updatedCount > 0) {
+      if (res.data.modifiedCount > 0) {
         refetch();
       }
     });
@@ -18,8 +17,7 @@ const ManageUsers = () => {
 
   const handleMakeAdmin = (userId) => {
     axiosSecure.put(`/users/${userId}`, { role: "admin" }).then((res) => {
-      console.log("make admin res", res.data);
-      if (res.data.updatedCount > 0) {
+      if (res.data.modifiedCount > 0) {
         refetch();
       }
     });
@@ -34,11 +32,14 @@ const ManageUsers = () => {
             <div>
               <h3 className="text-lg font-medium">{user.name}</h3>
               <p>{user.email}</p>
+            </div>
+            <div>
               <p>Role: {user.role}</p>
             </div>
+
             <div className="flex items-center space-x-2">
               <button
-                className="text-blue-500"
+                className="text-blue-800"
                 onClick={() => handleMakeInstructor(user._id)}
                 disabled={
                   user.role === "instructor" || user.role === "super-admin"

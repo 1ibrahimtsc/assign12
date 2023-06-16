@@ -11,10 +11,7 @@ const useInstructor = () => {
     enabled: !loading,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/instructor/${user?.email}`);
-      console.log(
-        "---------------res--rom useInstructor hook--------------",
-        res.data
-      );
+
       return res.data.instructor;
     },
   });

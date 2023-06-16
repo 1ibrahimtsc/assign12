@@ -20,19 +20,6 @@ const Classes = () => {
     const classesExist = cart.filter(
       (cartItem) => cartItem.classId === classItem._id
     );
-    console.log(
-      "-------classItem from Classes Component-----------",
-      classItem
-    );
-
-    console.log("-------cart from Classes Component-----------", cart);
-
-    console.log(
-      "-------classesExist from Classes Component-----------",
-      classesExist.length
-    );
-
-    //  if (classesExist.length > 0) {      }
 
     if (user && user.email) {
       const cartItem = {
@@ -52,16 +39,12 @@ const Classes = () => {
         Swal.fire("This class already selected!");
       } else {
         // TODO: Select class
-        //?email=${user?.email}
+
         axiosSecure
           .post(`/carts?email=${user?.email}`, cartItem)
           .then((data) => {
             if (data.data.insertedId) {
-              console.log(
-                "--------------------after selected new class-----------------",
-                data.data
-              );
-              refetch(); // refetch cart to update the number of items in the cart
+              refetch();
               Swal.fire({
                 position: "top-end",
                 icon: "success",

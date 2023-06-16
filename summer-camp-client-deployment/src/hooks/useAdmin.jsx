@@ -11,10 +11,7 @@ const useAdmin = () => {
     enabled: !loading,
     queryFn: async () => {
       const res = await axiosSecure.get(`/users/admin/${user?.email}`);
-      console.log(
-        "---------------res----from useAdmin hook------------",
-        res.data
-      );
+
       return res.data.admin;
     },
   });

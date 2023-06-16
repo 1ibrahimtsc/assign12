@@ -31,11 +31,14 @@ const SignUp = () => {
 
     createUser(data.email, data.password).then((result) => {
       const loggedUser = result.user;
-      console.log(loggedUser);
 
       updateUserData(data.name, data.photoURL)
         .then(() => {
-          const saveUser = { name: data.name, email: data.email };
+          const saveUser = {
+            name: data.name,
+            photoURL: data.photoURL,
+            email: data.email,
+          };
           fetch("http://127.0.0.1:5000/users", {
             method: "POST",
             headers: {

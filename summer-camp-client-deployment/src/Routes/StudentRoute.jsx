@@ -11,19 +11,6 @@ const StudentRoute = ({ children }) => {
   const [isInstructor] = useInstructor();
 
   const isStudent = user && !isAdmin && !isInstructor;
-  /*
-  let isStudent;
-  const isAdmin = false;
-  const isInstructor = false;
-  if (user && !isAdmin) {
-    isStudent = true;
-  }
-
-  if (user && !isInstructor) {
-    isStudent = true;
-  }
-*/
-  console.log("---------from StudentRoute-----------", isAdmin);
 
   const location = useLocation();
 

@@ -46,13 +46,9 @@ const client = new MongoClient(uri, {
 
 async function run() {
   try {
-    // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
     const usersCollection = client.db("SummerCampDb").collection("users");
-    const menuCollection = client.db("bistroDb").collection("menu");
-    const reviewCollection = client.db("bistroDb").collection("reviews");
-    // const cartCollection = client.db("bistroDb").collection("carts");
     const cartCollection = client.db("SummerCampDb").collection("carts");
     const classesCollection = client.db("SummerCampDb").collection("classes");
     const paymentCollection = client.db("SummerCampDb").collection("payments");
@@ -79,12 +75,6 @@ async function run() {
       next();
     };
 
-    /**
-     * 0. do not show secure links to those who should not see the links
-     * 1. use jwt token: verifyJWT
-     * 2. use verifyAdmin middleware
-     */
-
     // users related apis
     // app.get('/users', verifyJWT, verifyAdmin, async (req, res) => {
     app.get("/users", async (req, res) => {
@@ -99,6 +89,7 @@ async function run() {
       const user = {
         name: req.body.name,
         email: req.body.email,
+        photoURL: req.body.photoURL,
       };
       const query = { email: req.body.email };
 
@@ -115,13 +106,13 @@ async function run() {
     // update users student to instructor or admin
     app.put("/users/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("-------------------------------", req.body);
 
       const result = await usersCollection.updateOne(
         { _id: new ObjectId(id) },
         { $set: req.body },
         { upsert: true }
       );
+      res.send(result);
     });
 
     // security layer: verifyJWT
@@ -187,23 +178,6 @@ async function run() {
       }
     });
 
-    /*
-    app.get("/users/admin/:email", verifyJWT, async (req, res) => {
-      const email = req.params.email;
-
-      if (req.decoded.email !== email) {
-        res.send({ admin: false });
-      }
-
-      const query = { email: email };
-      const user = await usersCollection.findOne(query);
-      const result = { admin: user?.role === "admin" };
-
-      res.send(result);
-    });
-
-    */
-
     app.patch("/users/admin/:id", async (req, res) => {
       const id = req.params.id;
       console.log(id);
@@ -215,33 +189,6 @@ async function run() {
       };
 
       const result = await usersCollection.updateOne(filter, updateDoc);
-      res.send(result);
-    });
-
-    // menu related apis
-    app.get("/menu", async (req, res) => {
-      const result = await menuCollection.find().toArray();
-      res.send(result);
-    });
-
-    //app.post("/menu", verifyJWT, verifyAdmin, async (req, res) => {
-    app.post("/menu", async (req, res) => {
-      const newItem = req.body;
-      const result = await menuCollection.insertOne(newItem);
-      res.send(result);
-    });
-
-    //app.delete('/menu/:id', verifyJWT, verifyAdmin, async (req, res) => {
-    app.delete("/menu/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await menuCollection.deleteOne(query);
-      res.send(result);
-    });
-
-    // review related apis
-    app.get("/reviews", async (req, res) => {
-      const result = await reviewCollection.find().toArray();
       res.send(result);
     });
 
@@ -282,61 +229,15 @@ async function run() {
 
       const selecteditem = req.body;
 
-      /*
-      const getclass = await classesCollection.findOne({
-        _id: new ObjectId(req.body.classId),
-      });
-
-      let numberofstudents;
-      if (getclass.numberofstudents) {
-        numberofstudents = getclass.numberofstudents + 1;
-      } else {
-        numberofstudents = 1;
-      }
-
-      const emailofstudents = [];
-      if (getclass.emailofstudents) {
-        emailofstudents.push(...getclass.emailofstudents, req.body.email);
-      } else {
-        emailofstudents.push(req.body.email);
-      }
-
-      
-      
-      console.log("------emailofstudents------", emailofstudents);
-      const classUpdate = await classesCollection.updateOne(
-        { _id: new ObjectId(req.body.classId) },
-        {
-          $set: {
-            emailofstudents: emailofstudents,
-            numberofstudents: parseInt(numberofstudents),
-          },
-        }
-      );
-      */
-
       const result = await cartCollection.insertOne(selecteditem);
       res.send(result);
     });
 
-    /*
-
-    app.delete("/carts/:id", async (req, res) => {
-      const id = req.params.id;
-      const query = { _id: new ObjectId(id) };
-      const result = await cartCollection.deleteOne(query);
-      res.send(result);
-    }); 
-    
-    */
-
-    // delete cart item using get request
+    // api for delete from cart
     app.delete("/deleteselectedclasses/:id", async (req, res) => {
       const id = req.params.id;
 
       const getclass = await cartCollection.findOne({ _id: new ObjectId(id) });
-
-      console.log("----getclass----------", getclass);
 
       let numberofstudents;
       if (getclass.numberofstudents) {
@@ -369,15 +270,12 @@ async function run() {
     app.get("/myclasses", verifyJWT, async (req, res) => {
       const email = req.query.email;
 
-      console.log("-------------email-----------------", email);
-
       if (!email) {
         res.send([]);
       }
 
       const decodedEmail = req.decoded.email;
 
-      console.log("-------------decodedEmail-----------------", decodedEmail);
       if (email !== decodedEmail) {
         return res
           .status(403)
@@ -386,7 +284,7 @@ async function run() {
 
       const query = { instructorEmail: email };
       const result = await classesCollection.find(query).toArray();
-      console.log("-------------result-----------------", result);
+
       res.send(result);
     });
 
@@ -415,7 +313,7 @@ async function run() {
       const getidarray = idarray.map((x) => {
         return new ObjectId(x);
       });
-      //console.log("-----------getidarray---------", getidarray);
+
       const result = await classesCollection
         .find({
           _id: {
@@ -423,7 +321,7 @@ async function run() {
           },
         })
         .toArray();
-      //console.log("-------------result-----------------", result);
+
       res.send(result);
     });
 
@@ -448,8 +346,6 @@ async function run() {
 
       const idarray = user[0].selectedclasses;
       const modifiedidarray = idarray.filter((element) => element !== id);
-      console.log("------------idarray--------------", idarray);
-      console.log("------------modifiedidarray--------------", modifiedidarray);
 
       const updateDoc = {
         $set: {
@@ -477,16 +373,17 @@ async function run() {
       res.send(result);
     });
 
-    // update class pending to aproved
+    // update class pending to aproved or denied
     app.put("/classes/:id", async (req, res) => {
       const id = req.params.id;
-      console.log("--------------aproved-----------------", req.body);
 
       const result = await classesCollection.updateOne(
         { _id: new ObjectId(id) },
         { $set: req.body },
         { upsert: false }
       );
+
+      res.send(result);
     });
 
     // create payment intent
@@ -508,14 +405,12 @@ async function run() {
     app.post("/payments", verifyJWT, async (req, res) => {
       const payment = req.body;
 
-      //console.log('-------app.post("/payments"-----------', req.body);
       const insertResult = await paymentCollection.insertOne(payment);
 
       const query = {
         _id: { $in: payment.cartItems.map((id) => new ObjectId(id)) },
       };
 
-      // console.log( "--------queryforupdateclasses-------", queryforupdateclasses   );
       const deleteResult = await cartCollection.deleteMany(query);
 
       const queryforupdateclasses = {
@@ -536,11 +431,6 @@ async function run() {
         email: { $in: payment.instructorEmails.map((email) => email) },
       };
 
-      console.log(
-        "----------queryforupdateinstructors-------------",
-        queryforupdateinstructors
-      );
-
       const resultupdateusers = await usersCollection.updateMany(
         queryforupdateinstructors,
         {
@@ -550,71 +440,7 @@ async function run() {
         }
       );
 
-      //  { upsert: true }
-
       res.send({ insertResult, deleteResult });
-    });
-
-    app.get("/admin-stats", verifyJWT, verifyAdmin, async (req, res) => {
-      const users = await usersCollection.estimatedDocumentCount();
-      const products = await menuCollection.estimatedDocumentCount();
-      const orders = await paymentCollection.estimatedDocumentCount();
-
-      // best way to get sum of the price field is to use group and sum operator
-      /*
-        await paymentCollection.aggregate([
-          {
-            $group: {
-              _id: null,
-              total: { $sum: '$price' }
-            }
-          }
-        ]).toArray()
-      */
-
-      const payments = await paymentCollection.find().toArray();
-      const revenue = payments.reduce((sum, payment) => sum + payment.price, 0);
-
-      res.send({
-        revenue,
-        users,
-        products,
-        orders,
-      });
-    });
-
-    app.get("/order-stats", verifyJWT, verifyAdmin, async (req, res) => {
-      const pipeline = [
-        {
-          $lookup: {
-            from: "menu",
-            localField: "menuItems",
-            foreignField: "_id",
-            as: "menuItemsData",
-          },
-        },
-        {
-          $unwind: "$menuItemsData",
-        },
-        {
-          $group: {
-            _id: "$menuItemsData.category",
-            count: { $sum: 1 },
-            total: { $sum: "$menuItemsData.price" },
-          },
-        },
-        {
-          $project: {
-            category: "$_id",
-            count: 1,
-            total: { $round: ["$total", 2] },
-            _id: 0,
-          },
-        },
-      ];
-
-      const result = await paymentCollection.aggregate(pipeline).toArray();
-      res.send(result);
     });
 
     // Send a ping to confirm a successful connection
